@@ -153,7 +153,7 @@ export default function AuthPage() {
               <button
                 type="submit"
                 className="w-full py-3 rounded-full bg-blue text-white font-semibold text-base md:text-lg mt-2 hover:bg-lightBlue transition">
-                <Link href="/dashboard">Register</Link>
+                Register
               </button>
             </form>
 
