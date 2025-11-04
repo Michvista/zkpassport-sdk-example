@@ -212,28 +212,25 @@ const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
         ref={forwardedRef}
         className={cx("h-40 w-40", className)}
         tremor-id="tremor-raw"
-        {...other}
-      >
+        {...other}>
         <ResponsiveContainer className="size-full">
           <ReChartsDonutChart
             onClick={
               onValueChange && activeIndex !== undefined
                 ? () => {
-                    setActiveIndex(undefined)
-                    onValueChange(null)
+                    setActiveIndex(undefined);
+                    onValueChange(null);
                   }
                 : undefined
             }
-            margin={{ top: 0, left: 0, right: 0, bottom: 0 }}
-          >
+            margin={{ top: 0, left: 0, right: 0, bottom: 0 }}>
             {showLabel && isDonut && (
               <text
                 className="fill-gray-700 dark:fill-gray-300"
                 x="50%"
                 y="50%"
                 textAnchor="middle"
-                dominantBaseline="middle"
-              >
+                dominantBaseline="middle">
                 {parsedLabelInput}
               </text>
             )}
@@ -252,10 +249,10 @@ const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
               nameKey={category}
               isAnimationActive={false}
               onClick={handleShapeClick}
+              // @ts-expect-error: activeIndex missing from PieProps in Recharts v3
               activeIndex={activeIndex}
               inactiveShape={renderInactiveShape}
-              style={{ outline: "none" }}
-            >
+              style={{ outline: "none" }}>
               {parseData(data, categoryColors, category).map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
@@ -277,12 +274,12 @@ const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
                         category: item.payload[category],
                         value: item.value,
                         color: categoryColors.get(
-                          item.payload[category],
+                          item.payload[category]
                         ) as AvailableChartColorsKeys,
                       }))
-                    : []
+                    : [];
 
-                  const payloadCategory: string = cleanPayload[0]?.category
+                  const payloadCategory: string = cleanPayload[0]?.category;
 
                   if (
                     tooltipCallback &&
@@ -292,9 +289,9 @@ const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
                     tooltipCallback({
                       active,
                       payload: cleanPayload,
-                    })
-                    prevActiveRef.current = active
-                    prevCategoryRef.current = payloadCategory
+                    });
+                    prevActiveRef.current = active;
+                    prevCategoryRef.current = payloadCategory;
                   }
 
                   return showTooltip && active ? (
@@ -307,14 +304,14 @@ const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
                         valueFormatter={valueFormatter}
                       />
                     )
-                  ) : null
+                  ) : null;
                 }}
               />
             )}
           </ReChartsDonutChart>
         </ResponsiveContainer>
       </div>
-    )
+    );
   },
 )
 
