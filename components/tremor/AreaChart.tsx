@@ -761,9 +761,10 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                   (active !== prevActiveRef.current ||
                     label !== prevLabelRef.current)
                 ) {
-                  tooltipCallback({ active, payload: cleanPayload, label })
+                  tooltipCallback({ active, payload: cleanPayload, label: String(label ?? "") })
+
                   prevActiveRef.current = active
-                  prevLabelRef.current = label
+                 prevLabelRef.current = String(label ?? "");
                 }
 
                 return showTooltip && active ? (
@@ -771,13 +772,13 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                     <CustomTooltip
                       active={active}
                       payload={cleanPayload}
-                      label={label}
+                      label={String(label ?? "")}
                     />
                   ) : (
                     <ChartTooltip
                       active={active}
                       payload={cleanPayload}
-                      label={label}
+                      label={String(label ?? "")}
                       valueFormatter={valueFormatter}
                     />
                   )
