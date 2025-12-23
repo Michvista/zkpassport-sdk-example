@@ -103,19 +103,20 @@ export default function PayrollTable() {
   });
 
   return (
-    <div className="flex flex-col md:flex-row gap-4 w-full">
+    <div className="flex flex-col lg:flex-row gap-4 w-full">
       {/* Left: Table */}
-      <div className="flex-1 bg-white rounded-xl border p-4 shadow-sm">
+      <div className="flex-1 bg-white rounded-xl border p-4 shadow-sm min-w-0">
         <div className="overflow-x-auto w-full">
-          <table className="w-full table-fixed border-collapse text-sm">
+          {/* Changed table-fixed to table-auto and added min-w */}
+          <table className="w-full table-auto border-collapse text-sm min-w-[600px]">
             <thead className="text-left border-b">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
                     <th
             key={header.id}
-            className={`p-2 font-semibold text-gray-700 ${
-              header.id === "select" ? "w-10 text-center" : "whitespace-nowrap"
+            className={`p-2 font-semibold text-gray-700 whitespace-nowrap ${
+              header.id === "select" ? "w-10 text-center" : ""
             }`}
             style={header.id === "select" ? { width: "40px" } : {}}
           >
@@ -134,7 +135,7 @@ export default function PayrollTable() {
               {table.getRowModel().rows.map((row) => (
                 <tr key={row.id} className="border-b hover:bg-gray-50">
                   {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="p-2 align-middle">
+                    <td key={cell.id} className="p-2 align-middle whitespace-nowrap">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                   ))}
@@ -183,7 +184,7 @@ export default function PayrollTable() {
       </div>
 
       {/* Right: Actions */}
-      <div className="w-64 bg-white rounded-xl border p-4 shadow-sm flex flex-col gap-3">
+      <div className="w-full lg:w-64 bg-white rounded-xl border p-4 shadow-sm flex flex-col gap-3 h-fit">
         <h3 className="text-base font-semibold mb-2">Validate Payroll</h3>
         <button className="w-full px-4 py-2 bg-[#CCEEFF] border border-lightBlue text-black rounded-lg  hover:bg-blue hover:text-white">
           Validate Payroll
