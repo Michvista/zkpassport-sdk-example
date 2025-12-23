@@ -87,9 +87,14 @@ export default function Register() {
       });
       const { url, onResult, onError } = queryBuilder.done();
       setQueryUrl(url);
-      onResult(async ({ uniqueIdentifier, verified, proofs }) => {
-        if (verified) submitToBackend(uniqueIdentifier, proofs[0]);
-      });
+      // Updated working code
+onResult(async ({ uniqueIdentifier, verified, result }) => {
+  if (verified && result.proofs) {
+    // Access the first proof from the results object
+    submitToBackend(uniqueIdentifier, result.proofs[0]);
+  }
+});
+
       onError(() => {
         setLoading(false);
         toast.error("ZK verification failed.");
