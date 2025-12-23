@@ -28,29 +28,28 @@ function Page() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("dashboard");
 
-   const [selectedStaff, setSelectedStaff] = useState<any | null>(null);
-
+  const [selectedStaff, setSelectedStaff] = useState<any | null>(null);
 
   const renderContent = () => {
     switch (activeTab) {
-    case "dashboard":
-      return (
-        <DashboardContent
-          onStaffClick={(staff: any) => {
-            setSelectedStaff(staff);
-            setActiveTab("employeeDetail");
-          }}
-        />
-      );
+      case "dashboard":
+        return (
+          <DashboardContent
+            onStaffClick={(staff: any) => {
+              setSelectedStaff(staff);
+              setActiveTab("employeeDetail");
+            }}
+          />
+        );
       case "employees":
         return <EmployeesContent />;
-  case "employeeDetail":
-      return (
-        <EmployeeDetailContent
-          staff={selectedStaff}
-          onBack={() => setActiveTab("dashboard")}
-        />
-      );
+      case "employeeDetail":
+        return (
+          <EmployeeDetailContent
+            staff={selectedStaff}
+            onBack={() => setActiveTab("dashboard")}
+          />
+        );
       case "payroll":
         return <PayrollContent />;
       case "payslip":
@@ -58,17 +57,19 @@ function Page() {
       case "settings":
         return <SettingsContent />;
       default:
-        return  <DashboardContent
-          onStaffClick={(staff: any) => {
-            setSelectedStaff(staff);
-            setActiveTab("employeeDetail");
-          }}
-        />;
+        return (
+          <DashboardContent
+            onStaffClick={(staff: any) => {
+              setSelectedStaff(staff);
+              setActiveTab("employeeDetail");
+            }}
+          />
+        );
     }
   };
 
   return (
-    <div className="h-screen  overflow-hidden">
+    <div className="h-screen overflow-hidden">
       {/* ---- NAVBAR ---- */}
       <nav
         className={`${inter400.className} px-4 md:px-6 w-full bg-white shadow-md relative flex flex-col md:flex-row md:items-center md:justify-evenly h-auto md:h-[80px]`}
@@ -156,57 +157,68 @@ function Page() {
       </nav>
 
       {/* ---- DASHBOARD LAYOUT ---- */}
-<section className="flex md:min-h-[calc(100vh-80px)]">
-  {/* Sidebar */}
-<aside
-  className={`bg-white shadow-md w-64 p-4 transform transition-transform duration-300 ease-in-out z-20
+      <section className="flex md:min-h-[calc(100vh-80px)] overflow-hidden">
+        {/* Sidebar */}
+        <aside
+          className={`bg-white shadow-md w-64 p-4 transform transition-transform duration-300 ease-in-out z-20
     ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
     fixed md:top-[80px] left-0 h-[calc(100vh+80px)]
     md:static md:translate-x-0 md:h-[calc(100vh-80px)]
   `}
->
-  <div className="flex flex-col gap-4">
-  {[
-    { id: "dashboard", label: "Dashboard", icon: HomeIcon },
-    { id: "employees", label: "Employees", icon: UsersIcon },
-    { id: "payroll", label: "Payroll", icon: CurrencyDollarIcon },
-    { id: "payslip", label: "Payslip", icon: DocumentTextIcon },
-    { id: "settings", label: "Settings", icon: Cog6ToothIcon },
-  ].map((item) => (
-     <button
-    key={item.id}
-    onClick={() => { setActiveTab(item.id); setSidebarOpen(false); }}
-    className={`flex items-center gap-3 p-2 rounded-md transition-colors duration-300 ${
-      activeTab === item.id ? "bg-[#14acd667]" : "text-gray-700 hover:bg-gray-100"
-    }`}
-  >
-    {/* Icon - use a solid color matching the gradient start for visual balance */}
-    <item.icon className={`w-5 h-5 ${activeTab === item.id ? "text-lightBlue" : "text-gray-600"}`} />
+        >
+          <div className="flex flex-col gap-4">
+            {[
+              { id: "dashboard", label: "Dashboard", icon: HomeIcon },
+              { id: "employees", label: "Employees", icon: UsersIcon },
+              { id: "payroll", label: "Payroll", icon: CurrencyDollarIcon },
+              { id: "payslip", label: "Payslip", icon: DocumentTextIcon },
+              { id: "settings", label: "Settings", icon: Cog6ToothIcon },
+            ].map((item) => (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setActiveTab(item.id);
+                  setSidebarOpen(false);
+                }}
+                className={`flex items-center gap-3 p-2 rounded-md transition-colors duration-300 ${
+                  activeTab === item.id
+                    ? "bg-[#14acd667]"
+                    : "text-gray-700 hover:bg-gray-100"
+                }`}
+              >
+                <item.icon
+                  className={`w-5 h-5 ${
+                    activeTab === item.id ? "text-lightBlue" : "text-gray-600"
+                  }`}
+                />
 
-    {/* Label - apply text gradient */}
-    <span className={activeTab === item.id ? "bg-gradient-to-r from-lightBlue to-gradientBlue bg-clip-text text-transparent font-medium" : "font-medium"}>
-      {item.label}
-    </span>
-  </button>
-  ))}
-</div>
+                <span
+                  className={
+                    activeTab === item.id
+                      ? "bg-gradient-to-r from-lightBlue to-gradientBlue bg-clip-text text-transparent font-medium"
+                      : "font-medium"
+                  }
+                >
+                  {item.label}
+                </span>
+              </button>
+            ))}
+          </div>
+        </aside>
 
-  </aside>
+        {/* Main Content - FIX APPLIED HERE: min-w-0 and overflow-hidden */}
+        <main className="flex-1 p-6 md:ml-0 min-w-0 overflow-hidden">
+          {renderContent()}
+        </main>
 
-  {/* Main Content */}
-  <main className="flex-1 p-6 md:ml-0">
-    {renderContent()}
-  </main>
-
-  {/* Mobile Sidebar Toggle */}
-  <button
-    onClick={() => setSidebarOpen(!sidebarOpen)}
-    className="md:hidden fixed bottom-6 right-6 bg-blue text-white p-3 rounded-full shadow-lg z-30 transition-transform duration-300"
-  >
-    ☰
-  </button>
-</section>
-
+        {/* Mobile Sidebar Toggle */}
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="md:hidden fixed bottom-6 right-6 bg-blue text-white p-3 rounded-full shadow-lg z-30 transition-transform duration-300"
+        >
+          ☰
+        </button>
+      </section>
     </div>
   );
 }

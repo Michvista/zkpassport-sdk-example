@@ -7,28 +7,26 @@ import { ProgressBar } from "@/components/tremor/ProgressBar";
 import { Search, Plus, Upload, ChevronDown } from "lucide-react";
 import StaffTable from "./tables/StaffTable";
 
-// import FormPopup from "@/components/forms/FormPopup";
-
 import FormPopup from "./forms/FormPopup";
 import SuccessPopup from "./forms/SuccessPopup";
 import UploadCSV from "./forms/UploadCSV";
-// import SuccessPopup from "./forms/SuccessPopup;
 
 const inter = Inter({ subsets: ["latin"] });
 
 function EmployeesContent() {
-    const [showForm, setShowForm] = useState(false);
-    const [showUpload, setShowUpload] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [showUpload, setShowUpload] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
-    const handleFileUpload = (file: File) => {
+  const handleFileUpload = (file: File) => {
     console.log("Uploaded file:", file);
     setShowUpload(false); // close modal after upload
   };
 
   return (
     <main
-      className={`${inter.className} h-screen pb-[7rem] overflow-y-scroll `}>
+      className={`${inter.className} h-screen pb-[7rem] overflow-y-scroll `}
+    >
       {/* Title */}
       <p className="text-2xl font-semibold pb-4 border-b-2 border-ashIn w-[70%]">
         Employees
@@ -123,7 +121,7 @@ function EmployeesContent() {
         </div>
 
         {/* Add Employee */}
-   <button
+        <button
           onClick={() => setShowForm(true)}
           className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium bg-gradient-to-b from-blue to-gradientBlue shadow hover:opacity-90 transition"
         >
@@ -132,7 +130,10 @@ function EmployeesContent() {
         </button>
 
         {/* Upload CSV */}
-        <button onClick={() => setShowUpload(true)} className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium bg-gray-900 shadow hover:opacity-90 transition">
+        <button
+          onClick={() => setShowUpload(true)}
+          className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium bg-gray-900 shadow hover:opacity-90 transition"
+        >
           <Upload className="w-4 h-4" />
           Upload CSV
         </button>
@@ -148,18 +149,12 @@ function EmployeesContent() {
         </div>
       </div>
 
-      {/* Staff Table */}
-      <div className="p-3 my-4">
+      {/* Staff Table Container - FIX APPLIED HERE: Added overflow-hidden */}
+      <div className="my-4 overflow-hidden">
         <StaffTable />
       </div>
 
-
-
-
-
-
-      
-       {/* Add Employee Form Popup */}
+      {/* Add Employee Form Popup */}
       <FormPopup
         isOpen={showForm}
         onClose={() => setShowForm(false)}
@@ -197,7 +192,7 @@ function EmployeesContent() {
             <label className="block text-sm font-medium text-gray-700">
               Position
             </label>
-              <input
+            <input
               type="text"
               required
               className="w-full border rounded-lg px-3 py-2 mt-1 focus:ring focus:ring-blue-200"
