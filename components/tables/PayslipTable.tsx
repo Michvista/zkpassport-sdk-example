@@ -48,7 +48,7 @@ const slipColumns: ColumnDef<PayrollSlip>[] = [
     id: "action",
     header: "",
     cell: () => (
-      <button className="px-4 py-2 bg-ashIn font-bold text-black rounded-md hover:bg-blue hover:text-white">
+      <button className="px-4 py-2 bg-ashIn font-bold text-black rounded-md hover:bg-blue hover:text-white whitespace-nowrap">
         View
       </button>
     ),
@@ -71,7 +71,7 @@ const staffColumns: ColumnDef<StaffPayroll>[] = [
     id: "action",
     header: "Action",
     cell: () => (
-      <div className="flex gap-2">
+      <div className="flex gap-2 whitespace-nowrap">
         <button className="text-lightBlue hover:underline">Download</button>
         <button className="text-green hover:underline">Send to mail</button>
       </div>
@@ -96,36 +96,38 @@ const PayslipTable = () => {
   });
 
   return (
-    <div className="space-y-6 p-4">
+    <div className="space-y-6 p-4 min-w-0">
       {/* Payroll Slip Table */}
-      <div className="rounded-xl border p-4 bg-white shadow overflow-x-auto w-full">
-        <table className="w-full table-fixed border-collapse text-sm">
-          <thead className="text-left border-b">
-            {slipTable.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <th key={header.id} className="p-2">
-                    {flexRender(header.column.columnDef.header, header.getContext())}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {slipTable.getRowModel().rows.map((row) => (
-              <tr key={row.id} className="border-b last:border-none">
-                {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="p-2">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="rounded-xl border p-4 bg-white shadow w-full min-w-0">
+        <div className="overflow-x-auto w-full">
+          <table className="w-full table-auto border-collapse text-sm min-w-[600px]">
+            <thead className="text-left border-b">
+              {slipTable.getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <th key={header.id} className="p-2 whitespace-nowrap">
+                      {flexRender(header.column.columnDef.header, header.getContext())}
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody>
+              {slipTable.getRowModel().rows.map((row) => (
+                <tr key={row.id} className="border-b last:border-none">
+                  {row.getVisibleCells().map((cell) => (
+                    <td key={cell.id} className="p-2 whitespace-nowrap">
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
         {/* Pagination */}
-        <div className="flex items-center justify-between mt-4 text-sm">
+        <div className="flex flex-wrap items-center justify-between mt-4 gap-3 text-sm">
           <div className="flex gap-2">
             <button
               className="px-2 py-1 border rounded disabled:opacity-50"
@@ -161,34 +163,36 @@ const PayslipTable = () => {
       </div>
 
       {/* Staff Payroll Table */}
-      <div className="rounded-xl border p-4 bg-white shadow overflow-x-auto w-full">
-        <table className="w-full table-fixed border-collapse text-sm">
-          <thead className="text-left border-b">
-            {staffTable.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <th key={header.id} className="p-2">
-                    {flexRender(header.column.columnDef.header, header.getContext())}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {staffTable.getRowModel().rows.map((row) => (
-              <tr key={row.id} className="border-b last:border-none">
-                {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="p-2">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="rounded-xl border p-4 bg-white shadow w-full min-w-0">
+        <div className="overflow-x-auto w-full">
+          <table className="w-full table-auto border-collapse text-sm min-w-[700px]">
+            <thead className="text-left border-b">
+              {staffTable.getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <th key={header.id} className="p-2 whitespace-nowrap">
+                      {flexRender(header.column.columnDef.header, header.getContext())}
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody>
+              {staffTable.getRowModel().rows.map((row) => (
+                <tr key={row.id} className="border-b last:border-none">
+                  {row.getVisibleCells().map((cell) => (
+                    <td key={cell.id} className="p-2 whitespace-nowrap">
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
         {/* Pagination */}
-        <div className="flex items-center justify-between mt-4 text-sm">
+        <div className="flex flex-wrap items-center justify-between mt-4 gap-3 text-sm">
           <div className="flex gap-2">
             <button
               className="px-2 py-1 border rounded disabled:opacity-50"
