@@ -6,6 +6,9 @@ import Link from "next/link";
 import { ClipboardDocumentIcon, BellIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
 // import { toast } from "sonner";
 import { toast } from "sonner";
+import { useAuth } from "../contexts/AuthContext";
+import { useRouter } from "next/navigation";
+import { withAuth } from "../hoc/WithAuth";
 
 
 const inter500 = Inter({
@@ -18,7 +21,7 @@ const inter400 = Inter({
   subsets: ["latin"],
 });
 
-export default function Dashboard() {
+function Dashboard() {
   const [navOpen, setNavOpen] = useState(false);
   const [accountsTables, setAccountsTables] = useState<number[]>([]);
   const [apiKeyTables, setApiKeyTables] = useState<number[]>([]);
@@ -29,6 +32,8 @@ export default function Dashboard() {
 
   const [copiedItem, setCopiedItem] = useState<string | null>(null);
 
+  const { user, token, logout } = useAuth();
+ const router = useRouter();
   // Restrict Accounts
   const handleCreateAccount = () => {
     if (accountsTables.length >= 1) return;
@@ -56,7 +61,19 @@ const handleCopy = async (id: string, text: string) => {
   }
 };
 
+ const handleLogout = async () => {
+   // Call backend logout API if needed
+   await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, {
+     method: "POST",
+     credentials: "include",
+   });
 
+   // Clear frontend context
+   logout();
+
+   // Redirect to login page
+   router.push("/auth");
+ };
 
   return (
     <section>
@@ -100,10 +117,12 @@ const handleCopy = async (id: string, text: string) => {
           <div className="links capitalize text-xs sm:text-sm flex flex-col md:flex-row gap-4 md:gap-14 w-full md:w-[20%]">
             <Link href="/">home</Link>
             <Link href="/docs">docs</Link>
-            <Link href="/logout">logout</Link>
+            <button onClick={handleLogout} className="capitalize">logout</button>
           </div>
           <div className="btns text-xs flex flex-col md:flex-row w-full md:w-[60%] justify-end space-x-0 md:space-x-2 mt-2 md:mt-0 gap-2 md:gap-0">
-            <button className="logOut px-5 py-2 bg-darkBlue text-white rounded-full">
+            <button
+              onClick={handleLogout}
+              className="logOut px-5 py-2 bg-darkBlue text-white rounded-full">
               LogOut
             </button>
           </div>
@@ -121,7 +140,7 @@ const handleCopy = async (id: string, text: string) => {
                   Company Name
                 </p>
                 <p className="text-white text-xs md:text-md">
-                  De’ Morgans Incorporation
+                  {user?.companyName || "N/A"}
                 </p>
               </div>
               <div>
@@ -318,7 +337,9 @@ const handleCopy = async (id: string, text: string) => {
                           <button
                             onClick={() => {
                               const text =
-                                document.getElementById("apiSecretKeyID")?.innerText;
+                                document.getElementById(
+                                  "apiSecretKeyID"
+                                )?.innerText;
                               if (text) handleCopy("apiSecretKeyID", text);
                             }}
                             className="p-1 transition">
@@ -372,3 +393,6 @@ const handleCopy = async (id: string, text: string) => {
     </section>
   );
 }
+
+
+export default withAuth(Dashboard);

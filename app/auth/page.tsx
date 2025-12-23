@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { z } from "zod";
-import {  toast } from "sonner";
+import { toast } from "sonner";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -11,10 +11,10 @@ import {
   EnvelopeIcon,
   LockClosedIcon,
 } from "@heroicons/react/24/outline";
- import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useAuth } from "../contexts/AuthContext";
 
-
-// 🧩 Icon Map
+// Icon Map
 const iconMap: Record<string, JSX.Element> = {
   "Full Name": <UserIcon className="w-6 h-6 text-white opacity-70" />,
   "Company Name": (
@@ -23,8 +23,6 @@ const iconMap: Record<string, JSX.Element> = {
   "Email Address": <EnvelopeIcon className="w-6 h-6 text-white opacity-70" />,
   Password: <LockClosedIcon className="w-6 h-6 text-white opacity-70" />,
 };
-
-
 
 const registerSchema = z.object({
   fullName: z.string().min(5, "Full name must be at least 5 characters"),
@@ -38,10 +36,25 @@ const loginSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
+type RegisterData = {
+  fullName: string;
+  companyName: string;
+  email: string;
+  password: string;
+};
+
+type LoginData = {
+  email: string;
+  password: string;
+};
+
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(false);
-   const router = useRouter();
-  
+  const [loading, setLoading] = useState(false);
+
+  const { login } = useAuth();
+
+  const router = useRouter();
 
   const [registerData, setRegisterData] = useState({
     fullName: "",
@@ -55,6 +68,46 @@ export default function AuthPage() {
     password: "",
   });
 
+  async function signup(data: RegisterData) {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/auth/signup-email`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+          fullName: data.fullName,
+          companyName: data.companyName,
+        }),
+      }
+    );
+
+    const json = await res.json();
+    if (!json.ok) throw new Error(json.error);
+    return json;
+  }
+
+  async function loginUser(data: LoginData) {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login-email`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
+      }
+    );
+
+    const json = await res.json();
+    if (!json.ok) throw new Error(json.error);
+    return json;
+  }
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     formType: "login" | "register"
@@ -66,27 +119,55 @@ export default function AuthPage() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent, formType: "login" | "register") => {
+  const handleSubmit = async (
+    e: React.FormEvent,
+    formType: "login" | "register"
+  ) => {
     e.preventDefault();
+    setLoading(true);
 
-    const data = formType === "register" ? registerData : loginData;
-    const schema = formType === "register" ? registerSchema : loginSchema;
+    try {
+      if (formType === "register") {
+        // validate
+        const result = registerSchema.safeParse(registerData);
+        if (!result.success) {
+          toast.error(result.error.issues[0]?.message);
+          setLoading(false);
+          return;
+        }
 
-    const result = schema.safeParse(data);
+        // SIGN UP
+        const res = await signup(registerData);
 
-    if (!result.success) {
-      const firstError = result.error.issues[0]?.message;
-      toast.error(firstError || "Please fill in all fields correctly");
-      return;
+        // SAVE AUTH INTO CONTEXT
+        login(res.user, res.token);
+
+        toast.success("Registration successful!");
+        setTimeout(() => {
+          router.push("/dashboard");
+        }, 2000);
+      } else {
+        // validate
+        const result = loginSchema.safeParse(loginData);
+        if (!result.success) {
+          toast.error(result.error.issues[0]?.message);
+          setLoading(false);
+          return;
+        }
+
+        const res = await loginUser(loginData);
+        login(res.user, res.token);
+
+        toast.success("Login successful!");
+        setTimeout(() => {
+          router.push("/dashboard");
+        }, 2000);
+      }
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+      setLoading(false);
     }
-
-    toast.success(
-      formType === "register" ? "Registration successful!" : "Login successful!"
-    );
-    setTimeout(() => {
-      router.push("/dashboard");
-    }, 2000);
-    console.log(" Form Data:", data);
   };
 
   return (
@@ -152,8 +233,13 @@ export default function AuthPage() {
 
               <button
                 type="submit"
-                className="w-full py-3 rounded-full bg-blue text-white font-semibold text-base md:text-lg mt-2 hover:bg-lightBlue transition">
-                Register
+                disabled={loading}
+                className="w-full py-3 rounded-full bg-blue text-white font-semibold text-base md:text-lg mt-2 hover:bg-lightBlue transition flex items-center justify-center">
+                {loading ? (
+                  <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  "Register"
+                )}
               </button>
             </form>
 
@@ -214,8 +300,13 @@ export default function AuthPage() {
 
               <button
                 type="submit"
-                className="w-full py-3 rounded-full bg-blue text-white font-semibold text-base md:text-lg mt-2 hover:bg-lightBlue transition">
-                Login
+                disabled={loading}
+                className="w-full py-3 rounded-full bg-blue text-white font-semibold text-base md:text-lg mt-2 hover:bg-lightBlue transition flex items-center justify-center">
+                {loading ? (
+                  <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  "Login"
+                )}
               </button>
             </form>
 

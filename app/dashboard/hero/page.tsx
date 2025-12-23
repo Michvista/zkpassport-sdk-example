@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { Inter, Montserrat } from "next/font/google";
 import { UserIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { withAuth } from "../../hoc/WithAuth";
 
 
 const inter500 = Inter({
@@ -26,7 +27,7 @@ const montserrat = Montserrat({
   subsets: ["latin"],
 });
 
-export default function DHero() {
+function DHero() {
   const [navOpen, setNavOpen] = useState(false);
 
   return (
@@ -187,3 +188,6 @@ secured by zero-knowledge proofs.
     </section>
   );
 }
+
+
+export default withAuth(DHero);

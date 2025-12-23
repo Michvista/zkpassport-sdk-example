@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import React, { useState } from "react";
+import { withAuth } from "../../hoc/WithAuth";
 import { Inter } from "next/font/google";
 import { UserIcon } from "@heroicons/react/24/outline";
 import {
@@ -22,7 +23,7 @@ import EmployeeDetailContent from "@/components/moreDetails/EmployeeDetails";
 const inter500 = Inter({ weight: "500", subsets: ["latin"] });
 const inter400 = Inter({ weight: "400", subsets: ["latin"] });
 
-export default function Page() {
+function Page() {
   const [navOpen, setNavOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -209,3 +210,6 @@ export default function Page() {
     </div>
   );
 }
+
+
+export default withAuth(Page);
