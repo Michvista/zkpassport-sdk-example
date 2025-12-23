@@ -25,30 +25,17 @@ const inter400 = Inter({ weight: "400", subsets: ["latin"] });
 export default function Page() {
   const [navOpen, setNavOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("employees"); // Set to employees for testing
-
+  const [activeTab, setActiveTab] = useState("employees");
   const [selectedStaff, setSelectedStaff] = useState<any | null>(null);
 
   const renderContent = () => {
     switch (activeTab) {
       case "dashboard":
-        return (
-          <DashboardContent
-            onStaffClick={(staff: any) => {
-              setSelectedStaff(staff);
-              setActiveTab("employeeDetail");
-            }}
-          />
-        );
+        return <DashboardContent onStaffClick={(s: any) => { setSelectedStaff(s); setActiveTab("employeeDetail"); }} />;
       case "employees":
         return <EmployeesContent />;
       case "employeeDetail":
-        return (
-          <EmployeeDetailContent
-            staff={selectedStaff}
-            onBack={() => setActiveTab("dashboard")}
-          />
-        );
+        return <EmployeeDetailContent staff={selectedStaff} onBack={() => setActiveTab("dashboard")} />;
       case "payroll":
         return <PayrollContent />;
       case "payslip":
@@ -56,58 +43,47 @@ export default function Page() {
       case "settings":
         return <SettingsContent />;
       default:
-        return (
-          <DashboardContent
-            onStaffClick={(staff: any) => {
-              setSelectedStaff(staff);
-              setActiveTab("employeeDetail");
-            }}
-          />
-        );
+        return <DashboardContent onStaffClick={(s: any) => { setSelectedStaff(s); setActiveTab("employeeDetail"); }} />;
     }
   };
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden bg-gray-50">
-      {/* ---- NAVBAR ---- */}
-      <nav className={`${inter400.className} px-4 md:px-6 w-full bg-white shadow-sm relative flex flex-col md:flex-row md:items-center md:justify-between h-auto md:h-[80px] z-30`}>
+    <div className="h-screen overflow-hidden flex flex-col">
+      {/* ---- NAVBAR (Kept your original design) ---- */}
+      <nav className={`${inter400.className} px-4 md:px-6 w-full bg-white shadow-md relative flex flex-col md:flex-row md:items-center md:justify-evenly h-auto md:h-[80px] z-30`}>
         <div className="flex items-center justify-between w-full md:w-auto">
-          <div className="logo relative w-24 h-10 md:w-32 md:h-14">
+          <div className="logo relative w-24 h-10 md:w-32 md:h-14 flex justify-center md:justify-start">
             <Image src="/logo.png" alt="Logo" fill className="object-contain" />
           </div>
-          <button className="md:hidden p-2" onClick={() => setNavOpen(!navOpen)}>
-            <div className="space-y-1.5">
-              <span className={`block w-6 h-0.5 bg-gray-600 transition-all ${navOpen ? "rotate-45 translate-y-2" : ""}`} />
-              <span className={`block w-6 h-0.5 bg-gray-600 ${navOpen ? "opacity-0" : ""}`} />
-              <span className={`block w-6 h-0.5 bg-gray-600 transition-all ${navOpen ? "-rotate-45 -translate-y-2" : ""}`} />
+          <button className="md:hidden flex items-center justify-center w-10 h-10" onClick={() => setNavOpen(!navOpen)}>
+            <div className="flex flex-col justify-center items-center h-full">
+              <span className={`block w-6 h-0.5 bg-darkBlue transition-all ${navOpen ? "rotate-45 translate-y-2" : ""}`} />
+              <span className={`block w-6 h-0.5 bg-darkBlue my-1 ${navOpen ? "opacity-0" : ""}`} />
+              <span className={`block w-6 h-0.5 bg-darkBlue transition-all ${navOpen ? "-rotate-45 -translate-y-2" : ""}`} />
             </div>
           </button>
         </div>
 
-        <div className={`${navOpen ? "flex" : "hidden"} md:flex flex-col md:flex-row items-center gap-4 pb-4 md:pb-0`}>
-          <div className="flex flex-wrap justify-center gap-2">
-            <div className="rounded-full text-[10px] bg-blue-600 px-3 py-1 text-white">Admin</div>
-            <div className="rounded-full text-[10px] bg-gray-100 border px-3 py-1 text-gray-500 truncate max-w-[150px]">
-              Addr: 1aB9x...XqA
+        <div className={`w-full transition-all duration-300 ${navOpen ? "max-h-[600px] opacity-100 py-4" : "max-h-0 opacity-0 py-0"} md:flex md:items-center md:justify-evenly md:max-h-full md:opacity-100 md:py-0`}>
+          <div className="links flex flex-col md:flex-row md:items-center gap-4 md:gap-10 items-center">
+            <div className="txt rounded-full text-xs bg-blue text-center px-4 py-2 text-white">Admin</div>
+            <div className="txt rounded-full text-xs bg-[#F4F4F5] text-ashIn border-2 border-[#6D6D6D4D] px-3 py-2 flex gap-1">
+              API: <span className="max-w-[15ch] truncate">A9#tL7!xQ2@vZp$3mN^gW8&rYb*J5e+Tc1Xq</span>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <p className="text-sm font-medium">De Morgan&apos;s</p>
-            <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
-              <UserIcon className="w-4 h-4 text-white" />
-            </div>
+          <div className="btns flex items-center justify-center mt-4 md:mt-0 gap-2">
+            <p className={`capitalize text-base ${inter500.className}`}>De Morgan&apos;s Finance</p>
+            <button className="rounded-full bg-blue p-2 text-white">
+              <UserIcon className="w-4 h-4" />
+            </button>
           </div>
         </div>
       </nav>
 
-      {/* ---- DASHBOARD LAYOUT ---- */}
       <section className="flex flex-1 overflow-hidden">
-        {/* Sidebar */}
-        <aside
-          className={`bg-white border-r w-64 p-4 transform transition-transform duration-300 ease-in-out z-20 
-          fixed md:static h-[calc(100vh-80px)] ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
-        >
-          <div className="flex flex-col gap-2">
+        {/* ---- SIDEBAR (Restored your exact gradient/styles) ---- */}
+        <aside className={`bg-white shadow-md w-64 p-4 transform transition-transform duration-300 z-20 fixed md:static h-full ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}>
+          <div className="flex flex-col gap-4">
             {[
               { id: "dashboard", label: "Dashboard", icon: HomeIcon },
               { id: "employees", label: "Employees", icon: UsersIcon },
@@ -118,31 +94,23 @@ export default function Page() {
               <button
                 key={item.id}
                 onClick={() => { setActiveTab(item.id); setSidebarOpen(false); }}
-                className={`flex items-center gap-3 p-3 rounded-xl transition-all ${
-                  activeTab === item.id ? "bg-blue-50 text-blue-600" : "text-gray-500 hover:bg-gray-50"
-                }`}
+                className={`flex items-center gap-3 p-2 rounded-md transition-all ${activeTab === item.id ? "bg-[#14acd667]" : "text-gray-700 hover:bg-gray-100"}`}
               >
-                <item.icon className="w-5 h-5" />
-                <span className="font-medium text-sm">{item.label}</span>
+                <item.icon className={`w-5 h-5 ${activeTab === item.id ? "text-lightBlue" : "text-gray-600"}`} />
+                <span className={activeTab === item.id ? "bg-gradient-to-r from-lightBlue to-gradientBlue bg-clip-text text-transparent font-medium" : "font-medium"}>
+                  {item.label}
+                </span>
               </button>
             ))}
           </div>
         </aside>
 
-        {/* Main Content Area - THE CRITICAL FIX */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 min-w-0">
-          <div className="max-w-full">
-            {renderContent()}
-          </div>
+        {/* ---- MAIN CONTENT (The scroll fix) ---- */}
+        <main className="flex-1 p-6 overflow-y-auto min-w-0">
+          {renderContent()}
         </main>
 
-        {/* Mobile Toggle */}
-        <button
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="md:hidden fixed bottom-6 right-6 bg-blue-600 text-white p-4 rounded-full shadow-2xl z-40"
-        >
-          {sidebarOpen ? "✕" : "☰"}
-        </button>
+        <button onClick={() => setSidebarOpen(!sidebarOpen)} className="md:hidden fixed bottom-6 right-6 bg-blue text-white p-3 rounded-full shadow-lg z-30">☰</button>
       </section>
     </div>
   );
